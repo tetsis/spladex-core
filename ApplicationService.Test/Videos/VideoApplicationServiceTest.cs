@@ -92,6 +92,9 @@ namespace ApplicationService.Test.Videos
             Assert.AreEqual(2, video.Battles.Count);
             Assert.AreEqual(RuleId.SplatZones, video.Battles[0].Rule.Id);
 
+            var channel = _channelRepository.Find(video.VideoInfo.ChannelId);
+            Assert.IsNotNull(channel);
+
             var editingHistory = _editingHistoryRepository.FindRange(0, 10);
             Assert.AreEqual(1, editingHistory.Count);
         }
@@ -114,6 +117,9 @@ namespace ApplicationService.Test.Videos
             var removedVideo = _videoRepository.Find("id");
 
             Assert.IsNull(removedVideo);
+
+            var channel = _channelRepository.Find(video.VideoInfo.ChannelId);
+            Assert.IsNull(channel);
         }
 
         [TestMethod]
