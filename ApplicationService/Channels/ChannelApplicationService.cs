@@ -1,11 +1,5 @@
-﻿using ApplicationService.Channels.Add;
-using ApplicationService.Channels.Commons;
-using ApplicationService.Channels.Exceptions;
-using ApplicationService.Channels.Export;
-using ApplicationService.Channels.Get;
+﻿using ApplicationService.Channels.Commons;
 using ApplicationService.Channels.GetAll;
-using ApplicationService.Channels.GetInfo;
-using ApplicationService.Channels.Remove;
 using ApplicationService.Channels.Update;
 using ApplicationService.Users.Exceptions;
 using AutoMapper;
@@ -44,51 +38,8 @@ namespace ApplicationService.Channels
             {
                 cfg.CreateMap<Channel, ChannelData>();
                 cfg.CreateMap<ChannelInfo, ChannelInfoData>();
-                cfg.CreateMap<Channel, ChannelExportData>();
             });
             _mapper = config.CreateMapper();
-        }
-
-        public void Add(ChannelAddCommand command)
-        {
-            var user = _userRepository.Find(command.UserId);
-            if (user == null) throw new UserNotFoundException(command.UserId, "ユーザが見つかりませんでした。");
-
-            if (!user.Auth(command.SessionId)) throw new UserIsNotAuthenticatedException(command.UserId, "ユーザが認証されませんでした。");
-
-            if (!user.CanDo(Aggregate.Channel, UseCase.Add)) throw new UserIsNotAuthorizedException(user.Role, Aggregate.Channel, UseCase.Add, "権限がありません。");
-
-            // チャンネル情報生成
-            var channel = _channelFactory.Create(command.ChannelId);
-
-            var existingChannel = _channelRepository.Find(command.ChannelId);
-
-            _channelRepository.Delete(command.ChannelId);
-
-            _channelRepository.Create(channel);
-
-            // 履歴に追加
-            var operationType = (existingChannel == null) ? OperationType.Add : OperationType.Modify;
-            var editingHistory = new EditingHistory(user.Id, operationType, ContentType.Channel, channel);
-            _editingHistoryRepository.Create(editingHistory);
-        }
-
-        public void Remove(ChannelRemoveCommand command)
-        {
-            var user = _userRepository.Find(command.UserId);
-            if (user == null) throw new UserNotFoundException(command.UserId, "ユーザが見つかりませんでした。");
-
-            if (!user.Auth(command.SessionId)) throw new UserIsNotAuthenticatedException(command.UserId, "ユーザが認証されませんでした。");
-
-            if (!user.CanDo(Aggregate.Channel, UseCase.Remove)) throw new UserIsNotAuthorizedException(user.Role, Aggregate.Channel, UseCase.Remove, "権限がありません。");
-
-            var existingChannel = _channelRepository.Find(command.ChannelId);
-
-            _channelRepository.Delete(command.ChannelId);
-
-            // 履歴に追加
-            var editingHistory = new EditingHistory(user.Id, OperationType.Remove, ContentType.Channel, existingChannel);
-            _editingHistoryRepository.Create(editingHistory);
         }
 
         public void Update(ChannelUpdateCommand command)
@@ -117,48 +68,6 @@ namespace ApplicationService.Channels
             var channels = _channelRepository.FindAll();
             var dto = channels.Select(x => _mapper.Map<ChannelData>(x)).ToList();
             var result = new ChannelGetAllResult
-            {
-                Channels = dto
-            };
-            return result;
-        }
-
-        public ChannelGetResult Get(ChannelGetCommand command)
-        {
-            var channel = _channelRepository.Find(command.ChannelId);
-            if (channel == null) throw new ChannelNotFoundException(command.ChannelId, "チャンネルが見つかりませんでした。");
-
-            var dto = _mapper.Map<ChannelData>(channel);
-            var result = new ChannelGetResult
-            {
-                Channel = dto
-            };
-            return result;
-        }
-
-        public ChannelGetInfoResult GetInfo(ChannelGetInfoCommand command)
-        {
-            var channelInfo = _channelFactory.GetChannelInfo(command.ChannelId);
-            var dto = _mapper.Map<ChannelInfoData>(channelInfo);
-            var result = new ChannelGetInfoResult
-            {
-                ChannelInfo = dto
-            };
-            return result;
-        }
-
-        public ChannelExportResult Export(ChannelExportCommand command)
-        {
-            var user = _userRepository.Find(command.UserId);
-            if (user == null) throw new UserNotFoundException(command.UserId, "ユーザが見つかりませんでした。");
-
-            if (!user.Auth(command.SessionId)) throw new UserIsNotAuthenticatedException(command.UserId, "ユーザが認証されませんでした。");
-
-            if (!user.CanDo(Aggregate.Channel, UseCase.Export)) throw new UserIsNotAuthorizedException(user.Role, Aggregate.Channel, UseCase.Export, "権限がありません。");
-
-            var channels = _channelRepository.FindAll();
-            var dto = channels.Select(x => _mapper.Map<ChannelExportData>(x)).ToList();
-            var result = new ChannelExportResult
             {
                 Channels = dto
             };

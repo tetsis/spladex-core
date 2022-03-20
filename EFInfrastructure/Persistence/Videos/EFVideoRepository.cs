@@ -80,5 +80,11 @@ namespace EFInfrastructure.Persistence.Videos
             }
             _context.SaveChanges();
         }
+
+        public bool ExistsChannel(string channelId)
+        {
+            var exists = _context.Videos.Where(x => x.ChannelId == channelId).Count() > 0;
+            return exists;
+        }
     }
 }

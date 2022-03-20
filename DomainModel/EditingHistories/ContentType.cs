@@ -8,7 +8,6 @@ namespace DomainModel.EditingHistories
 {
     public enum ContentType
     {
-        Channel,
         Video
     }
 }

@@ -9,6 +9,7 @@ using ApplicationService.Videos.GetInfo;
 using ApplicationService.Videos.Remove;
 using ApplicationService.Videos.Update;
 using AutoMapper;
+using DomainModel.Channels;
 using DomainModel.EditingHistories;
 using DomainModel.Users;
 using DomainModel.Videos;
@@ -28,6 +29,8 @@ namespace ApplicationService.Videos
     {
         private readonly IVideoFactory _videoFactory;
         private readonly IVideoRepository _videoRepository;
+        private readonly IChannelFactory _channelFactory;
+        private readonly IChannelRepository _channelRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEditingHistoryRepository _editingHistoryRepository; 
         private readonly IMapper _mapper;
@@ -35,11 +38,15 @@ namespace ApplicationService.Videos
         public VideoApplicationService(
             IVideoFactory videoFactory,
             IVideoRepository videoRepository,
+            IChannelFactory channelFactory,
+            IChannelRepository channelRepository,
             IUserRepository userRepository,
             IEditingHistoryRepository editingHistoryRepository)
         {
             _videoFactory = videoFactory;
             _videoRepository = videoRepository;
+            _channelFactory = channelFactory;
+            _channelRepository = channelRepository;
             _userRepository = userRepository;
             _editingHistoryRepository = editingHistoryRepository;
 
@@ -80,6 +87,15 @@ namespace ApplicationService.Videos
             // 動画情報生成
             var video = _videoFactory.Create(command.VideoId, battles);
 
+            // 必要ならチャンネルを追加
+            if (!_videoRepository.ExistsChannel(video.VideoInfo.ChannelId))
+            {
+                // チャンネル情報生成
+                var channel = _channelFactory.Create(video.VideoInfo.ChannelId);
+
+                _channelRepository.Create(channel);
+            }
+
             var existingVideo = _videoRepository.Find(command.VideoId);
 
             _videoRepository.Delete(command.VideoId);
@@ -104,6 +120,12 @@ namespace ApplicationService.Videos
             var existingVideo = _videoRepository.Find(command.VideoId);
 
             _videoRepository.Delete(command.VideoId);
+
+            // 必要ならチャンネルを削除
+            if (!_videoRepository.ExistsChannel(existingVideo.VideoInfo.ChannelId))
+            {
+                _channelRepository.Delete(existingVideo.VideoInfo.ChannelId);
+            }
 
             // 履歴に追加
             var editingHistory = new EditingHistory(user.Id, OperationType.Remove, ContentType.Video, existingVideo);

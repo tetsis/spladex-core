@@ -4,12 +4,14 @@ using ApplicationService.Test.Mocks;
 using ApplicationService.Videos;
 using ApplicationService.Videos.Add;
 using ApplicationService.Videos.Commons;
+using DomainModel.Channels;
 using DomainModel.EditingHistories;
 using DomainModel.Users;
 using DomainModel.Videos;
 using DomainModel.Videos.Rules;
 using DomainModel.Videos.Stages;
 using DomainModel.Videos.Weapons;
+using EFInfrastructure.Persistence.Channels;
 using EFInfrastructure.Persistence.EditingHistories;
 using EFInfrastructure.Persistence.Users;
 using EFInfrastructure.Persistence.Videos;
@@ -29,6 +31,8 @@ namespace ApplicationService.Test.EditingHistories
 
         private IVideoFactory _videoFactory;
         private IVideoRepository _videoRepository;
+        private IChannelFactory _channelFactory;
+        private IChannelRepository _channelRepository;
         private IUserRepository _userRepository;
         private IEditingHistoryRepository _editingHistoryRepository;
         private IVideoApplicationService _videoApplicationService;
@@ -41,9 +45,11 @@ namespace ApplicationService.Test.EditingHistories
 
             _videoFactory = new MockVideoFactory();
             _videoRepository = new EFVideoRepository(DbContext);
+            _channelFactory = new MockChannelFactory();
+            _channelRepository = new EFChannelRepository(DbContext);
             _userRepository = new EFUserRepository(DbContext);
             _editingHistoryRepository = new EFEditingHistoryRepository(DbContext);
-            _videoApplicationService = new VideoApplicationService(_videoFactory, _videoRepository, _userRepository, _editingHistoryRepository);
+            _videoApplicationService = new VideoApplicationService(_videoFactory, _videoRepository, _channelFactory, _channelRepository, _userRepository, _editingHistoryRepository);
 
             user = new User("userId", "user", "", "", "", Role.Editor);
             _userRepository.Create(user);
