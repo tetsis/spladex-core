@@ -96,6 +96,13 @@ namespace ApplicationService.Channels
             // チャンネル情報の更新
             // YouTube APIから情報を取得して、チャンネルデータを再生成する
             // チャンネル登録者数などを最新にしたい場合に利用する
+            var user = _userRepository.Find(command.UserId);
+            if (user == null) throw new UserNotFoundException(command.UserId, "ユーザが見つかりませんでした。");
+
+            if (!user.Auth(command.SessionId)) throw new UserIsNotAuthenticatedException(command.UserId, "ユーザが認証されませんでした。");
+
+            if (!user.CanDo(Aggregate.Channel, UseCase.Change)) throw new UserIsNotAuthorizedException(user.Role, Aggregate.Channel, UseCase.Add, "権限がありません。");
+
             var channel = _channelRepository.Find(command.ChannelId);
 
             var updatedChannel = _channelFactory.Create(channel.Id);
