@@ -1,6 +1,7 @@
 ﻿using ApplicationService.Videos.Add;
 using ApplicationService.Videos.Export;
 using ApplicationService.Videos.Get;
+using ApplicationService.Videos.GetAllIds;
 using ApplicationService.Videos.GetInfo;
 using ApplicationService.Videos.Remove;
 using ApplicationService.Videos.Update;
@@ -20,5 +21,6 @@ namespace ApplicationService.Videos
         VideoGetResult Get(VideoGetCommand command);
         VideoGetInfoResult GetInfo(VideoGetInfoCommand command);
         VideoExportResult Export(VideoExportCommand command);
+        VideoGetAllIdsResult GetAllIds();
     }
 }

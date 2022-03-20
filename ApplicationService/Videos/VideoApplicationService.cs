@@ -4,6 +4,7 @@ using ApplicationService.Videos.Commons;
 using ApplicationService.Videos.Exceptions;
 using ApplicationService.Videos.Export;
 using ApplicationService.Videos.Get;
+using ApplicationService.Videos.GetAllIds;
 using ApplicationService.Videos.GetInfo;
 using ApplicationService.Videos.Remove;
 using ApplicationService.Videos.Update;
@@ -162,6 +163,17 @@ namespace ApplicationService.Videos
             var result = new VideoExportResult
             {
                 Videos = dto
+            };
+            return result;
+        }
+
+        public VideoGetAllIdsResult GetAllIds()
+        {
+            var videos = _videoRepository.FindAll();
+            var dto = videos.Select(x => x.Id).ToList();
+            var result = new VideoGetAllIdsResult
+            {
+                VideoIds = dto
             };
             return result;
         }
