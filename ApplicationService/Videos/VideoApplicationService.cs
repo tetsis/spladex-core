@@ -116,6 +116,13 @@ namespace ApplicationService.Videos
             // YouTube APIから情報を取得して、動画データを再生成する
             // 再生数などを最新にしたい場合に利用する
             // 試合データはそのまま
+            var user = _userRepository.Find(command.UserId);
+            if (user == null) throw new UserNotFoundException(command.UserId, "ユーザが見つかりませんでした。");
+
+            if (!user.Auth(command.SessionId)) throw new UserIsNotAuthenticatedException(command.UserId, "ユーザが認証されませんでした。");
+
+            if (!user.CanDo(Aggregate.Video, UseCase.Change)) throw new UserIsNotAuthorizedException(user.Role, Aggregate.Channel, UseCase.Add, "権限がありません。");
+
             var video = _videoRepository.Find(command.VideoId);
 
             var updatedVideo = _videoFactory.Create(video.Id, video.Battles);
