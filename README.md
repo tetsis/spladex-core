@@ -1,4 +1,4 @@
-# Splatoon2 Video Index Frontend
+# Splatoon2 Video Index Core
 ## Architecture
 ```
                  +---------------+
