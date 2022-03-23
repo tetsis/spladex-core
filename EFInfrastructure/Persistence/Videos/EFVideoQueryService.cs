@@ -1,5 +1,8 @@
 ﻿using ApplicationService.Videos;
+using ApplicationService.Videos.Commons;
+using ApplicationService.Videos.GetRange;
 using ApplicationService.Videos.Search;
+using AutoMapper;
 using DomainModel.Videos;
 using DomainModel.Videos.Rules;
 using DomainModel.Videos.Stages;
@@ -19,12 +22,26 @@ namespace EFInfrastructure.Persistence.Videos
     public class EFVideoQueryService : IVideoQueryService
     {
         private readonly SBIDbContext _context;
+        private readonly IMapper _mapper;
         private readonly int _limit = 9;
 
         public EFVideoQueryService(
             SBIDbContext context)
         {
             _context = context;
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<VideoDataModel, Video>();
+                cfg.CreateMap<BattleDataModel, Battle>();
+                cfg.CreateMap<Video, VideoData>();
+                cfg.CreateMap<VideoInfo, VideoInfoData>();
+                cfg.CreateMap<Battle, BattleData>()
+                    .ForMember(d => d.Rule, opt => opt.MapFrom(s => s.Rule.Id))
+                    .ForMember(d => d.Stage, opt => opt.MapFrom(s => s.Stage.Id))
+                    .ForMember(d => d.Weapon, opt => opt.MapFrom(s => s.Weapon.Id));
+            });
+            _mapper = config.CreateMapper();
         }
 
         public VideoSearchResult Search(VideoSearchCommand command)
@@ -124,6 +141,21 @@ namespace EFInfrastructure.Persistence.Videos
                 Battles = battles,
                 PageNumber = pageNumber,
                 ResultNumber = resultNumber
+            };
+            return result;
+        }
+
+        public VideoGetRangeResult GetRange(VideoGetRangeCommand command)
+        {
+            var videos = _context.Videos.Include(x => x.Battles)
+                                        .Where(x => x.PublishedAt >= command.PublishedFrom)
+                                        .Where(x => x.ChannelId == command.Channel)
+                                        .Select(x => _mapper.Map<Video>(x));
+
+            var dto = videos.Select(x => _mapper.Map<VideoData>(x)).ToList();
+            var result = new VideoGetRangeResult
+            {
+                Videos = dto
             };
             return result;
         }
