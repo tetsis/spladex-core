@@ -150,6 +150,7 @@ namespace EFInfrastructure.Persistence.Videos
             var videos = _context.Videos.Include(x => x.Battles)
                                         .Where(x => x.PublishedAt >= command.PublishedFrom)
                                         .Where(x => x.ChannelId == command.Channel)
+                                        .OrderByDescending(x => x.PublishedAt)
                                         .Select(x => _mapper.Map<Video>(x));
 
             var dto = videos.Select(x => _mapper.Map<VideoData>(x)).ToList();
