@@ -59,7 +59,7 @@ namespace EFInfrastructure.Persistence.Videos
 
             var dataModel = _mapper.Map<VideoDataModel>(video);
 
-            // インデックスをつける
+            // 試合データにインデックスをつける
             dataModel.Battles = dataModel.Battles.Select((x, index) => x with { Index = index }).ToList();
 
             _context.Add(dataModel);

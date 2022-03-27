@@ -10,6 +10,6 @@ namespace ApplicationService.Videos.Export
     public class VideoExportData
     {
         public string Id { get; init; }
-        public List<BattleData> Battles { get; init; }
+        public List<BattleExportData> Battles { get; init; }
     }
 }

@@ -4,6 +4,7 @@ using ApplicationService.Videos;
 using ApplicationService.Videos.Add;
 using ApplicationService.Videos.Commons;
 using ApplicationService.Videos.Export;
+using ApplicationService.Videos.Get;
 using ApplicationService.Videos.GetInfo;
 using ApplicationService.Videos.Remove;
 using DomainModel.Channels;
@@ -64,22 +65,25 @@ namespace ApplicationService.Test.Videos
             {
                 UserId = admin.Id,
                 SessionId = admin.SessionId,
-                VideoId = "videoId",
-                Battles = new List<BattleData>
+                Video = new VideoAddData
                 {
-                    new BattleData
+                    Id = "videoId",
+                    Battles = new List<BattleAddData>
                     {
-                        Seconds = 10,
-                        Rule = "SplatZones",
-                        Stage = "TheReef",
-                        Weapon = "Sploosh_o_matic"
-                    },
-                    new BattleData
-                    {
-                        Seconds = 20,
-                        Rule = "SplatZones",
-                        Stage = "TheReef",
-                        Weapon = "Sploosh_o_matic"
+                        new BattleAddData
+                        {
+                            Seconds = 10,
+                            Rule = "SplatZones",
+                            Stage = "TheReef",
+                            Weapon = "Sploosh_o_matic"
+                        },
+                        new BattleAddData
+                        {
+                            Seconds = 20,
+                            Rule = "SplatZones",
+                            Stage = "TheReef",
+                            Weapon = "Sploosh_o_matic"
+                        }
                     }
                 }
             };
@@ -175,6 +179,41 @@ namespace ApplicationService.Test.Videos
         }
 
         [TestMethod]
+        public void 動画データを取得する()
+        {
+            var addCommand = new VideoAddCommand
+            {
+                UserId = admin.Id,
+                SessionId = admin.SessionId,
+                Video = new VideoAddData
+                {
+                    Id = "videoId",
+                    Battles = new List<BattleAddData>
+                        {
+                            new BattleAddData
+                            {
+                                Seconds = 10,
+                                Rule = "SplatZones",
+                                Stage = "TheReef",
+                                Weapon = "Sploosh_o_matic"
+                            }
+                        }
+                }
+            };
+            _videoApplicationService.Add(addCommand);
+
+            var command = new VideoGetCommand
+            {
+                VideoId = "videoId"
+            };
+            var video = _videoApplicationService.Get(command).Video;
+
+            Assert.AreEqual("ガチエリア", video.Battles[0].Rule.Name);
+            Assert.AreEqual("バッテラストリート", video.Battles[0].Stage.Name);
+            Assert.AreEqual("ボールドマーカー", video.Battles[0].Weapon.Name);
+        }
+
+        [TestMethod]
         public void 動画情報のみ取得する()
         {
             var command = new VideoGetInfoCommand
@@ -196,22 +235,25 @@ namespace ApplicationService.Test.Videos
                 {
                     UserId = admin.Id,
                     SessionId = admin.SessionId,
-                    VideoId = $"videoId{i}",
-                    Battles = new List<BattleData>
+                    Video = new VideoAddData
                     {
-                        new BattleData
+                        Id = $"videoId{i}",
+                        Battles = new List<BattleAddData>
                         {
-                            Seconds = 10,
-                            Rule = "SplatZones",
-                            Stage = "TheReef",
-                            Weapon = "Sploosh_o_matic"
-                        },
-                        new BattleData
-                        {
-                            Seconds = 20,
-                            Rule = "SplatZones",
-                            Stage = "MusselforgeFitness",
-                            Weapon = "Sploosh_o_matic"
+                            new BattleAddData
+                            {
+                                Seconds = 10,
+                                Rule = "SplatZones",
+                                Stage = "TheReef",
+                                Weapon = "Sploosh_o_matic"
+                            },
+                            new BattleAddData
+                            {
+                                Seconds = 20,
+                                Rule = "SplatZones",
+                                Stage = "MusselforgeFitness",
+                                Weapon = "Sploosh_o_matic"
+                            }
                         }
                     }
                 };

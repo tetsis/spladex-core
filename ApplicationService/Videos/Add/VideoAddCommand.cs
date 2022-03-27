@@ -11,7 +11,6 @@ namespace ApplicationService.Videos.Add
     {
         public string UserId { get; init; }
         public string SessionId { get; init; }
-        public string VideoId { get; init; }
-        public List<BattleData> Battles { get; init; }
+        public VideoAddData Video { get; init; }
     }
 }

@@ -22,7 +22,7 @@ namespace DomainModel.Test.EditingHistories
                 new VideoInfo("channelId", "チャンネル", "thumbnail", DateTime.Now, 1),
                 new List<Battle>
                 {
-                    new Battle("id", 0, Rules.GetById(RuleId.ClamBlitz), Stages.GetById(StageId.AnchoVGames), Weapons.GetById(WeaponId.AerosprayMG), 2000)
+                    new Battle(0, Rules.GetById(RuleId.ClamBlitz), Stages.GetById(StageId.AnchoVGames), Weapons.GetById(WeaponId.AerosprayMG), 2000)
                 });
             var editingHistory = new EditingHistory("userId", OperationType.Add, ContentType.Video, video);
 

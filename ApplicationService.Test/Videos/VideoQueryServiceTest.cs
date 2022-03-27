@@ -55,8 +55,8 @@ namespace ApplicationService.Test.Videos
                 new VideoInfo("id", "title", "thumbnail", DateTime.Now, 1),
                 new List<Battle>
                 {
-                    new Battle("id", 0, Rules.GetById(RuleId.SplatZones), Stages.GetById(StageId.AnchoVGames), Weapons.GetById(WeaponId.AerosprayMG), 2000),
-                    new Battle("id", 10, Rules.GetById(RuleId.ClamBlitz), Stages.GetById(StageId.AnchoVGames), Weapons.GetById(WeaponId.AerosprayMG), 2000),
+                    new Battle(0, Rules.GetById(RuleId.SplatZones), Stages.GetById(StageId.AnchoVGames), Weapons.GetById(WeaponId.AerosprayMG), 2000),
+                    new Battle(10, Rules.GetById(RuleId.ClamBlitz), Stages.GetById(StageId.AnchoVGames), Weapons.GetById(WeaponId.AerosprayMG), 2000),
                 }
             );
             _videoRepository.Create(video);

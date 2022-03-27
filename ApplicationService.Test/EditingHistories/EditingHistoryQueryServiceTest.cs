@@ -59,14 +59,17 @@ namespace ApplicationService.Test.EditingHistories
             {
                 UserId = user.Id,
                 SessionId = user.SessionId,
-                VideoId = "videoId",
-                Battles = new List<BattleData>
+                Video = new VideoAddData
                 {
-                    new BattleData {
-                        Seconds = 0,
-                        Rule = Rules.GetAll()[0].Id.ToString(),
-                        Stage = Stages.GetAll()[0].Id.ToString(),
-                        Weapon = Weapons.GetAll()[0].Id.ToString()
+                    Id = "videoId",
+                    Battles = new List<BattleAddData>
+                    {
+                        new BattleAddData {
+                            Seconds = 0,
+                            Rule = Rules.GetAll()[0].Id.ToString(),
+                            Stage = Stages.GetAll()[0].Id.ToString(),
+                            Weapon = Weapons.GetAll()[0].Id.ToString()
+                        }
                     }
                 }
             };

@@ -13,14 +13,12 @@ namespace DomainModel.Videos
     {
         // 再構成用
         public Battle(
-            string videoId,
             int seconds,
             string rule,
             string stage,
             string weapon,
             int roomPower)
         {
-            VideoId = videoId;
             Seconds = seconds;
             Rule = Rules.Rules.GetById(rule);
             Stage = Stages.Stages.GetById(stage);
@@ -29,14 +27,12 @@ namespace DomainModel.Videos
         }
 
         public Battle(
-            string videoId,
             int seconds,
             Rule rule,
             Stage stage,
             Weapon weapon,
             int roomPower)
         {
-            VideoId = videoId;
             Seconds = seconds;
             Rule = rule;
             Stage = stage;
@@ -44,7 +40,6 @@ namespace DomainModel.Videos
             RoomPower = roomPower;
         }
 
-        public string VideoId { get; }
         public int Seconds { get; }
         public Rule Rule { get; }
         public Stage Stage { get; }

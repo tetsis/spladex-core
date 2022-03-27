@@ -16,6 +16,7 @@ using DomainModel.Videos;
 using DomainModel.Videos.Rules;
 using DomainModel.Videos.Stages;
 using DomainModel.Videos.Weapons;
+using DomainModel.Videos.WeaponTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,11 +55,18 @@ namespace ApplicationService.Videos
             {
                 cfg.CreateMap<Video, VideoData>();
                 cfg.CreateMap<VideoInfo, VideoInfoData>();
-                cfg.CreateMap<Battle, BattleData>()
+                cfg.CreateMap<Battle, BattleData>();
+                cfg.CreateMap<Rule, RuleData>();
+                cfg.CreateMap<Stage, StageData>();
+                cfg.CreateMap<Weapon, WeaponData>();
+
+                cfg.CreateMap<Video, VideoExportData>();
+                cfg.CreateMap<Battle, BattleExportData>()
                     .ForMember(d => d.Rule, opt => opt.MapFrom(s => s.Rule.Id))
                     .ForMember(d => d.Stage, opt => opt.MapFrom(s => s.Stage.Id))
                     .ForMember(d => d.Weapon, opt => opt.MapFrom(s => s.Weapon.Id));
-                cfg.CreateMap<Video, VideoExportData>();
+
+                cfg.CreateMap<BattleAddData, Battle>();
             });
             _mapper = config.CreateMapper();
         }
@@ -73,19 +81,13 @@ namespace ApplicationService.Videos
             if (!user.CanDo(Aggregate.Video, UseCase.Add)) throw new UserIsNotAuthorizedException(user.Role, Aggregate.Channel, UseCase.Add, "権限がありません。");
 
             // Battleドメインモデルを生成する
-            var battles = new List<Battle>();
-            command.Battles.ForEach(battle =>
-            {
-                Rule rule = Rules.GetById(battle.Rule);
-                Stage stage = Stages.GetById(battle.Stage);
-                Weapon weapon = Weapons.GetById(battle.Weapon);
-                battles.Add(new Battle(command.VideoId, battle.Seconds, rule, stage, weapon, battle.RoomPower));
-            });
+            var battles = command.Video.Battles.Select(x => _mapper.Map<Battle>(x));
+
             // Battleを秒数順に並び替える
-            battles = battles.OrderBy(x => x.Seconds).ToList();
+            battles = battles.OrderBy(x => x.Seconds);
 
             // 動画情報生成
-            var video = _videoFactory.Create(command.VideoId, battles);
+            var video = _videoFactory.Create(command.Video.Id, battles.ToList());
 
             // 必要ならチャンネルを追加
             if (!_videoRepository.ExistsChannel(video.VideoInfo.ChannelId))
@@ -96,9 +98,9 @@ namespace ApplicationService.Videos
                 _channelRepository.Create(channel);
             }
 
-            var existingVideo = _videoRepository.Find(command.VideoId);
+            var existingVideo = _videoRepository.Find(command.Video.Id);
 
-            _videoRepository.Delete(command.VideoId);
+            _videoRepository.Delete(command.Video.Id);
 
             _videoRepository.Create(video);
 

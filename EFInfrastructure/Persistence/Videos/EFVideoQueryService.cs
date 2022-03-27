@@ -36,10 +36,10 @@ namespace EFInfrastructure.Persistence.Videos
                 cfg.CreateMap<BattleDataModel, Battle>();
                 cfg.CreateMap<Video, VideoData>();
                 cfg.CreateMap<VideoInfo, VideoInfoData>();
-                cfg.CreateMap<Battle, BattleData>()
-                    .ForMember(d => d.Rule, opt => opt.MapFrom(s => s.Rule.Id))
-                    .ForMember(d => d.Stage, opt => opt.MapFrom(s => s.Stage.Id))
-                    .ForMember(d => d.Weapon, opt => opt.MapFrom(s => s.Weapon.Id));
+                cfg.CreateMap<Battle, BattleData>();
+                cfg.CreateMap<Rule, RuleData>();
+                cfg.CreateMap<Stage, StageData>();
+                cfg.CreateMap<Weapon, WeaponData>();
             });
             _mapper = config.CreateMapper();
         }
