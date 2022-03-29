@@ -98,13 +98,29 @@ namespace EFInfrastructure.Persistence.Videos
             }
 
             // 並び替え
-            if (command.Sort == Sort.PublishedAt.ToString())
+            if (command.Sort == Sort.PublishedAtAsc.ToString())
+            {
+                filteredItems = filteredItems.OrderBy(x => x.Video.PublishedAt);
+            }
+            else if (command.Sort == Sort.PublishedAtDesc.ToString())
             {
                 filteredItems = filteredItems.OrderByDescending(x => x.Video.PublishedAt);
             }
-            else if (command.Sort == Sort.ViewCount.ToString())
+            else if (command.Sort == Sort.ViewCountAsc.ToString())
+            {
+                filteredItems = filteredItems.OrderBy(x => x.Video.ViewCount);
+            }
+            else if (command.Sort == Sort.ViewCountDesc.ToString())
             {
                 filteredItems = filteredItems.OrderByDescending(x => x.Video.ViewCount);
+            }
+            else if (command.Sort == Sort.RoomPowerAsc.ToString())
+            {
+                filteredItems = filteredItems.OrderBy(x => x.Battle.RoomPower);
+            }
+            else if (command.Sort == Sort.RoomPowerDesc.ToString())
+            {
+                filteredItems = filteredItems.OrderByDescending(x => x.Battle.RoomPower);
             }
             else
             {

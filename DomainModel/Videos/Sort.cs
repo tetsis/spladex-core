@@ -8,7 +8,11 @@ namespace DomainModel.Videos
 {
     public enum Sort
     {
-        PublishedAt, // 投稿日
-        ViewCount, // 再生回数
+        PublishedAtAsc, // 投稿日（昇順）
+        PublishedAtDesc, // 投稿日（降順）
+        ViewCountAsc, // 再生回数,（昇順）
+        ViewCountDesc, // 再生回数,（降順）
+        RoomPowerAsc, // 部屋パワー昇順
+        RoomPowerDesc // 部屋パワー降順
     }
 }
