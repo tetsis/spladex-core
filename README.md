@@ -1,4 +1,4 @@
-# Splatoon2 Video Index Core
+# Spladex Core
 ```
                  +---------------+
 +----------+     |      +------+ |     +-----+
@@ -14,19 +14,19 @@
 ```
 
 - Frontend
-    - [Repo](https://github.com/tetsis/splatoon2-video-index-frontend)
+    - [Repo](https://github.com/tetsis/spladex-frontend)
     - React
     - Deployed in [vercel](https://vercel.com/)
-        - [page](https://splatoon2-video-index.vercel.app)
+        - [page](https://spladex.jp)
 - API
-    - [Repo](https://github.com/tetsis/splatoon2-video-index-api) (private)
+    - [Repo](https://github.com/tetsis/spladex-api) (private)
     - ASP.NET
 - Core (here)
-    - [Repo](https://github.com/tetsis/splatoon2-video-index-core)
+    - [Repo](https://github.com/tetsis/spladex-core)
     - C#
 - RDB
     - MySQL
 - Scheduler
-	- [Repo](https://github.com/tetsis/splatoon2-video-index-scheduler)
+	- [Repo](https://github.com/tetsis/spladex-scheduler)
     - C#
     - Azure functions
